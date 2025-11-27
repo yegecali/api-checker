@@ -1,6 +1,7 @@
 package com.yegecali.apichecker.service;
 
 import com.yegecali.apichecker.config.ConfiguredScenario;
+import com.yegecali.apichecker.config.ExecutionContext;
 import com.yegecali.apichecker.config.ScenarioConfigurationRegistry;
 import com.yegecali.apichecker.config.ScenarioMetadata;
 import com.yegecali.apichecker.dto.HealthCheckResponse;

@@ -1,16 +1,56 @@
-# Configuración de la aplicación API Checker
+# Configuraci?n de la aplicaci?n API Checker
 quarkus:
-  # Configuración del servidor HTTP
+  # Configuraci?n del servidor HTTP
   http:
     port: 8081
 
-  # Nombre de la aplicación
+  # Nombre de la aplicaci?n
   application:
     name: apichecker
 
-  # Configuración de logging
+  # Configuraci?n de logging
   log:
     level: INFO
     category:
       "com.yegecali.apichecker":
         level: DEBUG
+
+# Configuraci?n por ambientes
+health-check:
+  environments:
+    # Configuraci?n para DESARROLLO
+    configs:
+      desarrollo:
+        urls:
+          card-api: "http://localhost:3000/api/dev/cards"
+          person-api: "http://localhost:3000/api/dev/persons"
+          payment-api: "http://localhost:3000/api/dev/payments"
+        test-data:
+          card-number: "4111111111111111"
+          document-number: "12345678"
+          api-key: "dev-api-key-12345"
+          custom-header: "X-Dev-Environment"
+
+      # Configuraci?n para QA
+      qa:
+        urls:
+          card-api: "https://api-qa.example.com/cards"
+          person-api: "https://api-qa.example.com/persons"
+          payment-api: "https://api-qa.example.com/payments"
+        test-data:
+          card-number: "4532015112830366"
+          document-number: "87654321"
+          api-key: "qa-api-key-67890"
+          custom-header: "X-QA-Environment"
+
+      # Configuraci?n para PRODUCCION
+      produccion:
+        urls:
+          card-api: "https://api.example.com/cards"
+          person-api: "https://api.example.com/persons"
+          payment-api: "https://api.example.com/payments"
+        test-data:
+          card-number: "5425233430109903"
+          document-number: "99887766"
+          api-key: "prod-api-key-abcdef"
+          custom-header: "X-Prod-Environment"

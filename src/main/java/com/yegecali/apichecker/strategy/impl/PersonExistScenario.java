@@ -1,7 +1,10 @@
 package com.yegecali.apichecker.strategy.impl;
 
+import com.yegecali.apichecker.config.EnvironmentConfigService;
+import com.yegecali.apichecker.config.ExecutionContext;
 import com.yegecali.apichecker.strategy.HealthCheckScenario;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -11,9 +14,29 @@ public class PersonExistScenario implements HealthCheckScenario {
     private static final Logger LOGGER = Logger.getLogger(PersonExistScenario.class.getName());
     private final Random random = new Random();
 
+    @Inject
+    EnvironmentConfigService environmentConfigService;
+
+    @Inject
+    ExecutionContext executionContext;
+
     @Override
     public boolean execute() {
-        LOGGER.info("Ejecutando health check: " + getName());
+        Environment environment = executionContext.getCurrentEnvironment();
+        LOGGER.info("Ejecutando health check: " + getName() + " para ambiente: " + environment);
+
+        // Obtener configuración del ambiente
+        try {
+            String apiUrl = environmentConfigService.getPersonApiUrl(environment);
+            String documentNumber = environmentConfigService.getDocumentNumber(environment);
+            String apiKey = environmentConfigService.getApiKey(environment);
+
+            LOGGER.info("URL API: " + apiUrl);
+            LOGGER.info("Document Number (masked): " + maskDocumentNumber(documentNumber));
+            LOGGER.info("API Key (masked): " + maskApiKey(apiKey));
+        } catch (Exception e) {
+            LOGGER.warning("No se pudo cargar configuración para ambiente: " + environment + ". " + e.getMessage());
+        }
 
         // Simular llamada a API con delay
         try {
@@ -28,6 +51,20 @@ public class PersonExistScenario implements HealthCheckScenario {
         LOGGER.info(getName() + " - Disponibilidad: " + available);
 
         return available;
+    }
+
+    private String maskDocumentNumber(String documentNumber) {
+        if (documentNumber != null && documentNumber.length() > 2) {
+            return "**" + documentNumber.substring(documentNumber.length() - 2);
+        }
+        return "**";
+    }
+
+    private String maskApiKey(String apiKey) {
+        if (apiKey != null && apiKey.length() > 8) {
+            return apiKey.substring(0, 4) + "..." + apiKey.substring(apiKey.length() - 4);
+        }
+        return "****";
     }
 
     @Override
