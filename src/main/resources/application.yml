@@ -1,0 +1,16 @@
+# Configuración de la aplicación API Checker
+quarkus:
+  # Configuración del servidor HTTP
+  http:
+    port: 8081
+
+  # Nombre de la aplicación
+  application:
+    name: apichecker
+
+  # Configuración de logging
+  log:
+    level: INFO
+    category:
+      "com.yegecali.apichecker":
+        level: DEBUG
